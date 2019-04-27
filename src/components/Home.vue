@@ -19,6 +19,7 @@
             :unique-opened="true"
             :collapse="isshow"
             :collapse-transition="false"
+            :router="true"
           >
             <el-submenu
               :index="item.id+''"
@@ -30,15 +31,10 @@
                 <i :class="'iconfont icon-'+inconList[k]"></i>
                 <span>{{item.authName}}</span>
               </template>
-              <el-menu-item
-                :index="item.id+'-'+item2.id"
-                v-for="item2 in item.children"
-                :key="item2.id"
-              >
+              <el-menu-item :index="item2.path" v-for="item2 in item.children" :key="item2.id">
                 <i class="el-icon-menu"></i>
                 <span>{{item2.authName}}</span>
               </el-menu-item>
-              <el-menu-item index="1-2">选项2</el-menu-item>
             </el-submenu>
           </el-menu>
         </el-aside>
@@ -55,24 +51,23 @@ export default {
     this.getMuenList()
   },
   methods: {
-    logout(){
-        this.$confirm('确认退出吗?', '退出', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
+    logout() {
+      this.$confirm('确认退出吗?', '退出', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
           //清楚token
           window.sessionStorage.removeItem('token')
           //重定向到登录页面去
           this.$router.push('/login')
-        }).catch(() => {
-                
-        });
-
+        })
+        .catch(() => {})
     },
     async getMuenList() {
       const { data: dt } = await this.$http.get('menus')
-      console.log(dt)
+      // console.log(dt)
       if (dt.meta.status !== 200) {
         return this.$message.error(dt.meta.masg)
       }
